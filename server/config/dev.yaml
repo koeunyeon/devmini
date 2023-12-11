@@ -1,0 +1,18 @@
+name: dev
+rdb:
+  type: mysql
+  echo: true
+  host: 127.0.0.1
+  port: 3306
+  dbname: devmini
+  username: devmini
+  userpass: 1234
+server:
+  host: 0.0.0.0
+  port: 5000
+  reload: true
+log:
+  path: logs
+  name: falog
+extra:
+  regist_expired_hour: 2

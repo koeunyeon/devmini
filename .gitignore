@@ -1,0 +1,4 @@
+memo.md
+__pycache__
+*.log
+*.log.*
