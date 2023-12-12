@@ -1,8 +1,8 @@
 import uuid
 from datetime import datetime, timedelta
-from enum import Enum
 from keyfa.util import rdbutil
 from config import Config
+from schema.memberschema import RegistResultEnum
 
 async def member_exist(email):
     return await rdbutil.exist("member", email=email)
@@ -17,14 +17,7 @@ async def send_regist_email(email):
     "todo : implements"
     pass
 
-class RegistResultEnum(Enum):
-    MEMBER_CREATED = "MEMBER_CREATED"
-    MEMBER_CREATE_FAIL = "MEMBER_CREATE_FAIL"
-    ACTIVATED_MEMBER = "ACTIVATED_MEMBER"
-    EMAIL_KEY_REGEN = "EMAIL_KEY_REGEN"
-    EMAIL_KEY_NOT_EXPIRED = "EMAIL_KEY_NOT_EXPIRED"
-
-async def regist(email) -> RegistResultEnum:
+async def regist(email: str) -> RegistResultEnum:
     if not await member_exist(email=email):
         email_key = await generate_email_key()
         expired_at = datetime.now() + timedelta(hours=Config.extra.regist_expired_hour)
