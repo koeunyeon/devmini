@@ -39,7 +39,18 @@ async def regist(email: str) -> RegistResultEnum:
     if datetime.now() > member.expired_at:
         email_key = await generate_email_key()
         expired_at = datetime.now() + timedelta(hours=Config.extra.regist_expired_hour)
-        rdbutil.update("member", email_key=email_key, expired_at=expired_at)
+        
+        await rdbutil.update(
+            target_table="member",
+            terms=dict(
+                id = member.id
+            ),
+            values=dict(
+                email_key = email_key, 
+                expired_at = expired_at
+            )
+        )
+        
         return RegistResultEnum.EMAIL_KEY_REGEN
     else:
         return RegistResultEnum.EMAIL_KEY_NOT_EXPIRED
