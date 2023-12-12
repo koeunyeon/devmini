@@ -1,5 +1,6 @@
 import os
 import yaml
+from typing import List
 
 
 class RdbConfig:
@@ -32,6 +33,22 @@ class LogConfig:
     path: str
     name: str
 
+class CorsConfig:
+    allow_origins: list = []
+    allow_credentials: bool = True
+    allow_methods: List[str] = ["*"]
+    allow_headers: List[str] = ["*"]
+
+class JwtConfig:
+    secret: str
+    algorithm: str = "hs256"
+    expired_days: int
+    expired_seconds: int
+    expired_minutes: int
+    expired_hours: int
+    expired_weeks: int
+
+
 class ExtraConfig:
     pass
 
@@ -40,6 +57,8 @@ class Config:
     rdb: RdbConfig = RdbConfig
     server: ServerConfig = ServerConfig
     log: LogConfig = LogConfig
+    cors: CorsConfig = CorsConfig
+    jwt: JwtConfig = JwtConfig
     extra: ExtraConfig = ExtraConfig
 
     _conf_dict: dict
@@ -53,10 +72,12 @@ class Config:
         cls.name = cls._conf_dict["name"]
         #cls.rdb = RdbConfig
         #cls.server = ServerConfig
-        composit_keys = ["rdb", "server", "log", "extra"]
+        composit_keys = ["rdb", "server", "log", "cors", "jwt", "extra"]
 
-        for yaml_key in composit_keys:
+        for yaml_key in composit_keys:            
             target_class = getattr(cls, yaml_key)
+            if not yaml_key in cls._conf_dict.keys():
+                continue
             for k, v in cls._conf_dict[yaml_key].items():                
                 setattr(target_class, k, v)
 

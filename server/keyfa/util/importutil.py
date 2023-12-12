@@ -1,6 +1,11 @@
 import os
 import importlib
 
+from starlette.middleware.cors import CORSMiddleware
+
+from config import Config
+
+
 def middleware(app, middleware_dir = "middleware"):
     if not os.path.exists("./" + middleware_dir):
         return
@@ -34,6 +39,15 @@ def router(app, router_dir = "router", router_instance_name="router"):
         router_instance = getattr(router_module, router_instance_name)
         app.include_router(router_instance)
 
+def import_cors(app):
+    if len(Config.cors.allow_origins) > 0:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins= Config.cors.allow_origins,
+            allow_credentials= Config.cors.allow_credentials,
+            allow_methods= Config.cors.allow_methods,
+            allow_headers= Config.cors.allow_headers
+        )
 def import_keyfa(app):
     #import key core
     middleware(app, "keyfa/middleware")
@@ -42,4 +56,7 @@ def import_keyfa(app):
     # import user modules
     middleware(app)    
     router(app)
+
+    # cors
+    import_cors(app)
 

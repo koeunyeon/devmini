@@ -8,8 +8,6 @@ from keyfa.util.importutil import import_keyfa
 
 from keyfa.logmodule.logfactory import get_logger
 
-
-
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     # on startup
