@@ -34,9 +34,10 @@ def _term_to_where(**terms):
     return where
         
 
-async def first(target_table, sort_column=None, **terms):
+async def first(target_table, sort_column=None, *columns, **terms):
     where = _term_to_where(**terms)
-    query = f"select * from {target_table} where {where}"
+    columns = "*" if len(columns) == 0 else ",".join(columns)
+    query = f"select {columns} from {target_table} where {where}"
     if sort_column is not None:
         query+= f" order by {sort_column} asc"
     query +=" limit 1"
@@ -45,9 +46,10 @@ async def first(target_table, sort_column=None, **terms):
         return qs[0]
     return None
 
-async def last(target_table, sort_column='created_at', **terms):
+async def last(target_table, sort_column='created_at', *columns, **terms):
     where = _term_to_where(**terms)
-    query = f"select * from {target_table} where {where}"    
+    columns = "*" if len(columns) == 0 else ",".join(columns)
+    query = f"select {columns} from {target_table} where {where}"    
     query+= f" order by {sort_column} desc"
     query +=" limit 1"
     qs = await native(query, **terms)
@@ -61,9 +63,10 @@ async def exist(target_table, **terms):
     qs = await native(query, **terms)
     return qs[0]["cnt"] > 0
 
-async def all(target_table, sort_column="created_at asc", **terms):
+async def all(target_table, sort_column="created_at asc", *columns, **terms):
     where = _term_to_where(**terms)
-    query = f"select * from {target_table} where {where}"
+    columns = "*" if len(columns) == 0 else ",".join(columns)
+    query = f"select {columns} from {target_table} where {where}"
     if sort_column is not None:
         query+= f" order by {sort_column}"    
     qs = await native(query, **terms)
@@ -81,7 +84,7 @@ async def insert(target_table, **values):
     
     return None
 
-async def update(target_table, values, **terms):
+async def update(target_table, terms: dict, values: dict):
     where = _term_to_where(**terms)
     upd_cols = ",".join([f"{x} = :{x}" for x in values.keys()])
     query = f"update {target_table} set {upd_cols} where {where}"
@@ -94,3 +97,4 @@ async def delete(target_table, **terms):
     query = f"delete from {target_table} where {where}"
     delete_row_count = await native(query, **terms)
     return delete_row_count
+
