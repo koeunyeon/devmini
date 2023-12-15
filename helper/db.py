@@ -124,4 +124,3 @@ def run():
 # python db.py table product: name, category_id, price.type=int.default=0
 run()
 
-
