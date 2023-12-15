@@ -1,17 +1,13 @@
-from typing import Annotated
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Header
 from fastapi.responses import PlainTextResponse
 
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
 
 import yaml
 router = APIRouter(prefix="/keyfa", tags=["KEY FastAPI Default"])
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.get("/health")
-async def get_health(token: Annotated[str, Depends(oauth2_scheme)]) -> str:
+async def get_health() -> str:    
     return "ok"
 
 @router.get("/openapi.yaml", response_class=PlainTextResponse)

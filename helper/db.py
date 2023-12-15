@@ -16,14 +16,14 @@ def _get_column_query(column):
     data_length = None
 
     # rule base
-    if col_name.endswith("_id") or col_name == 'id':
-        data_type = 'INT UNSIGNED'
-        nullable = True
-
     if col_name == 'id':
         data_type = 'INT UNSIGNED'
         nullable = False
         extra_value = 'AUTO_INCREMENT'
+
+    if col_name.endswith("_id"):
+        data_type = 'INT UNSIGNED'
+        nullable = True
     
     if col_name.endswith('_dt') or col_name.endswith('_at'):
         data_type = 'datetime'
@@ -91,13 +91,13 @@ def gen_table(table_name, columns):
     basic_query = f"""
 CREATE TABLE `{table_name}` 
 ( 
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,    
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;    
     """
 
     
-    column_query_list = []    
+    column_query_list = []
     columns.extend(['created_at', 'updated_at', "use_yn.nn.default=Y"])
     for column in columns:
         column_query = _get_column_query(column)
