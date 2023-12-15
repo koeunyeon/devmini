@@ -107,7 +107,6 @@ CREATE TABLE `{table_name}`
     print (basic_query)
     print ("\n".join(column_query_list))
 
-
 def run():
     cmd = sys.argv[1].lower()
     args = " ".join(sys.argv[2:])
