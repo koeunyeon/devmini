@@ -14,13 +14,13 @@ class RdbConfig:
 
     @classmethod
     def get_url(cls):
-        url = "mysql+aiomysql://{}:{}@{}:{}/{}?charset=utf8mb4".format(
-            cls.username,
-            cls.userpass,
-            cls.host,
-            cls.port, 
-            cls.dbname
-        )
+        url = None
+        if cls.type == "mysql":
+            url = f"mysql+aiomysql://{cls.username}:{cls.userpass}@{cls.host}:{cls.port}/{cls.dbname}?charset=utf8mb4"
+        elif cls.type == "postgres":
+            url = f"postfresql+asyncpg://{cls.username}:{cls.userpass}@{cls.host}:{cls.port}/{cls.dbname}"
+        elif cls.type == "sqlite":
+            url = f"sqlite:///{cls.host}"
 
         return url
 
