@@ -11,9 +11,12 @@ server:
   host: 0.0.0.0
   port: 5000
   reload: true
+  ssl_certfile:
+  ssl_keyfile:
+  ssl_keypass:
 log:
   path: logs
-  name: falog
+  name: keyfalog
 cors:
   allow_origins:
     - http://localhost:5500

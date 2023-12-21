@@ -28,6 +28,9 @@ class ServerConfig:
     host: str
     port: str
     reload: bool
+    ssl_certfile: str
+    ssl_keyfile: str
+    ssl_keypass: str
 
 class LogConfig:
     path: str
