@@ -2,17 +2,13 @@ import os
 import importlib
 
 from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware import Middleware
 
 from config import Config
 
 
-def middleware(app, middleware_dir = "middleware"):
-    if not os.path.exists("./" + middleware_dir):
-        return
-    middlewares = os.listdir("./" + middleware_dir)
-    for middleware_path in middlewares:
-        if not middleware_path.endswith(".py"):
-            continue
+def middleware(app, middleware_dir = "middleware", *manual_middlewares):
+    def get_middleware_class(middleware_path):
         middleware_module_name = middleware_path.replace(".py", "")
         middleware_module_prefix = middleware_dir.replace("/", ".")
         middleware_module_path = f"{middleware_module_prefix}.{middleware_module_name}"
@@ -22,7 +18,30 @@ def middleware(app, middleware_dir = "middleware"):
         middleware_class_name = middleware_class_name[0].upper() + "".join(middleware_class_name[1:])
 
         middleware_class = getattr(middleware_module, middleware_class_name)
+        return middleware_class
+
+    if not os.path.exists("./" + middleware_dir):
+        return
+    
+    manual_middlewares = list(manual_middlewares)
+    
+    manual_middlewares.reverse()
+    for middleware_path in manual_middlewares:
+        middleware_class = get_middleware_class(middleware_path)
         app.add_middleware(middleware_class)
+
+    middlewares = os.listdir("./" + middleware_dir)    
+    for middleware_path in middlewares:
+        if not middleware_path.endswith(".py"):
+            continue
+        
+        if middleware_path.replace(".py", "") in manual_middlewares:            
+            continue
+
+        middleware_class = get_middleware_class(middleware_path)
+        app.add_middleware(middleware_class)
+    
+
 
 def router(app, router_dir = "router", router_instance_name="router"):
     if not os.path.exists("./" + router_dir):
@@ -50,11 +69,11 @@ def import_cors(app):
         )
 def import_keyfa(app):
     #import key core
-    middleware(app, "keyfa/middleware")
+    middleware(app, "keyfa/middleware", "responsemiddleware")
     router(app, router_dir="keyfa/router")
 
     # import user modules
-    middleware(app)    
+    middleware(app)
     router(app)
 
     # cors
