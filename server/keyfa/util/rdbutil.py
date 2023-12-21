@@ -98,3 +98,12 @@ async def delete(target_table, **terms):
     delete_row_count = await native(query, **terms)
     return delete_row_count
 
+
+async def save(target_table, **values):
+    if 'id' in values.keys():
+        terms = {'id' : values['id']}
+        del values["id"]
+        return update(target_table, terms, values)
+    else:
+        return insert(target_table, **values)
+
