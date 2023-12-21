@@ -12,7 +12,7 @@ from keyfa.config import Config
 
 loggers = {}
 
-def get_logger(logger_name:str = Config.log.name, log_dir:str = Config.log.path):
+def get_logger(logger_name:str = Config.log.name, log_dir:str = Config.log.path, log_level=logging.DEBUG):
     global loggers
     
     if logger_name in loggers:
@@ -21,7 +21,7 @@ def get_logger(logger_name:str = Config.log.name, log_dir:str = Config.log.path)
     LOG_FMT = '{"timestamp" : "%(asctime)s", "level" : "%(levelname)s", "message": "%(message)s"}'
 
     logger = logging.getLogger(logger_name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(log_level)
     formatter = logging.Formatter(LOG_FMT)
 
     stream_hander = logging.StreamHandler()
