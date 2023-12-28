@@ -1,6 +1,6 @@
 from sqlalchemy import Column, DateTime, String, Integer, func, CHAR
 
-def column_by_rule(col_name, **extra_args):
+def column(col_name, **extra_args):
     data_type = None
     nullable = True
     default = None
@@ -8,8 +8,20 @@ def column_by_rule(col_name, **extra_args):
     if col_name.endswith("_id") or col_name == 'id':
         data_type = Integer
 
+    if col_name == "id":
+        extra_args["primary_key"] = True
+        extra_args["index"] = True
+        
     if col_name.endswith('_dt') or col_name.endswith('_at'):
         data_type = DateTime
+    
+    if col_name == "created_at":
+        nullable = False
+        default = func.now()
+    
+    if col_name == "updated_at":
+        default = None
+        extra_args["onupdate"] = func.now()
     
     if col_name.endswith("link") or col_name.endswith("url"):
         data_type = String(2083)
