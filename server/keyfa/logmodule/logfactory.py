@@ -1,7 +1,4 @@
 import os
-import sys
-import queue
-
 import logging
 import logging.handlers
 
@@ -13,6 +10,8 @@ from keyfa.config import Config
 loggers = {}
 
 def get_logger(logger_name:str = Config.log.name, log_dir:str = Config.log.path, log_level=logging.DEBUG):
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
     global loggers
     
     if logger_name in loggers:
