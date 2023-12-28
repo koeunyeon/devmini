@@ -72,7 +72,7 @@ def import_keyfa(app):
 
     # import user modules
     middleware(app)
-    router(app)
+    router(app, "router")
 
     # cors
     cors(app)
