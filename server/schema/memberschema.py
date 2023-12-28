@@ -21,9 +21,20 @@ class MemberConfirmResponse(str, Enum):
     ACTIVATE_SUCCESS = "ACTIVATE_SUCCESS"
 
 class MemberLoginInputRequest(BaseModel):
-    email: EmailStr = Body(description="email")
+    email: EmailStr = Field(description="email")
 
 class MemberLoginInputResponse(str, Enum):
     MEMBER_IS_NOT_EXIST = "MEMBER_IS_NOT_EXIST"
     MEMBER_IS_NOT_ACTIVATE = "MEMBER_IS_NOT_ACTIVATE"
     LOGIN_EMAIL_SEND_SUCCESS = "LOGIN_EMAIL_SEND_SUCCESS"
+
+
+# 클래스 기반은 안되네. 그러면 필드 기반으로 해 볼까.
+
+email: EmailStr = Field(description="email")
+# to Query, Path ... Query 가 문제인데. path는 함수 기반으로 인지하고, body는 기본값인데. Query는 어쩌지.
+
+# 일단 이건 작동은 함. 미리 필드들을 정의해 두고, 동적으로 클래스를 만들면.. 장점이 있나?
+
+class Sample(BaseModel):
+    email: EmailStr = email
