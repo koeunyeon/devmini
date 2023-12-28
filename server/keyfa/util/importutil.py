@@ -2,8 +2,6 @@ import os
 import importlib
 
 from starlette.middleware.cors import CORSMiddleware
-from fastapi.middleware import Middleware
-
 from config import Config
 
 
@@ -58,7 +56,7 @@ def router(app, router_dir = "router", router_instance_name="router"):
         router_instance = getattr(router_module, router_instance_name)
         app.include_router(router_instance)
 
-def import_cors(app):
+def cors(app):
     if len(Config.cors.allow_origins) > 0:
         app.add_middleware(
             CORSMiddleware,
@@ -77,5 +75,5 @@ def import_keyfa(app):
     router(app)
 
     # cors
-    import_cors(app)
+    cors(app)
 
